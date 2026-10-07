@@ -19,7 +19,7 @@ skyler-hall
 
 **Plan comment**
 
-PASTE-COMMENT-LINK-HERE
+https://github.com/codepath/pathreview-ai301-fa26-s3/issues/68#issuecomment-6028553159
 
 Plan for #68, built on my repro report above (`main` at `2f4e82f`).
 
