@@ -164,29 +164,58 @@ Windows 11 Home (10.0.26100), Python 3.13.7, uv 0.13.7, render-engine `main` at 
 
 **Analysis**
 
-[Your analysis of the root cause: what is causing the issue, traced
-to the files and functions involved.]
+When a site has no `_base.html` of its own, pages use the built-in templates in `src/render_engine/render_engine_templates/`. `base.html` is one line, `{% extends "base_templates/_base.html" %}`, and overrides nothing. In `base_templates/_base.html`, `{% block header %}` (first child of `<body>`) and `{% block footer %}` (last child) are both empty. Every other default template ends up at `_base.html`: `page.html` and `redirect.html` go through `_page.html`, which extends `_base.html` directly, and `archive.html` goes through `_archive.html`, which extends `base.html`. None of them override `header` or `footer`. So the root cause is the empty `header` and `footer` blocks in `_base.html`.
+
+The site title is available as `{{SITE_TITLE}}`, and `{{SITE_URL}}` is also a default (`Site.__init__` in `site.py` sets both). `NAVIGATION`, which the cookiecutter template uses, is not a default. An unguarded loop over a missing `NAVIGATION` renders an empty `<nav>`, and `NAVIGATION = None` raises a `TypeError`.
 
 **Proposed Solution**
 
-[High-level description of your fix approach, and what you are
-deliberately NOT changing.]
+In the thread, john0isaac suggested the default `_base.html` should match the cookiecutter `_base.html`, and kjaymiller acknowledged it. So I'll fill the two existing blocks in `_base.html` with defaults based on the cookiecutter template:
+
+~~~jinja
+{% block header %}
+<header>
+    <a href="{{SITE_URL}}">{{SITE_TITLE}}</a>
+    {% if NAVIGATION %}
+    <nav class="container">
+        {% for link in NAVIGATION %}
+        <span><a href="{{link.url}}">{{link.name}}</a></span>
+        {% endfor %}
+    </nav>
+    {% endif %}
+</header>
+{% endblock %}
+
+{% block footer %}
+<footer class="container">
+    <hr />
+    <p><a href="{{SITE_URL}}">{{SITE_URL}}</a></p>
+    <p>Built with <a href="https://github.com/render-engine/render-engine/">Render Engine</a></p>
+</footer>
+{% endblock %}
+~~~
+
+The footer matches the cookiecutter exactly. The header keeps the cookiecutter's nav loop, but I added a `{% if NAVIGATION %}` guard so sites without it don't get an empty `<nav>` or an error, plus a `<header>` wrapper and the site title, since #609 asks for a header. The fix goes in `_base.html`, not `base.html`, so `page.html` and `redirect.html` get it too. The block names stay the same, so any template that overrides `header` or `footer` (like the cookiecutter one) still replaces the default.
+
+I'm deliberately NOT changing: the empty `content` and `page_title` blocks, any other template file, the unused `components/footer.html` (I'll ask about it in the PR), site variables, or CSS. One risk: sites that already use the default `base.html` will start seeing a header and footer.
 
 **Implementation Plan**
 
-1. [Modify file X to do Y]
-2. [Add or change Z]
-3. [Update tests]
-
-[Record deviations here as they happen: what changed mid-build and
-why. A recorded deviation is honest work; silent drift is not.]
+1. Wait to be assigned to #609, then create branch `issue-609` from `main`.
+2. Add four tests to `tests/test_templates/test_base_html.py`: default header shows the site title linked to `SITE_URL` with no `<nav>`; header shows `NAVIGATION` links when set; default footer shows the `SITE_URL` link and "Built with"; and a template that overrides both blocks still replaces the defaults.
+3. Run the template tests and confirm the three default tests fail before the fix. Save that output.
+4. Edit the `header` and `footer` blocks in `base_templates/_base.html`.
+5. Rerun the template tests (all pass) and `repro/repro_609.py` (both `True`).
+6. Run every check in my ship manifest (setup, pytest, ruff check, ruff format check, ty) and confirm `uv.lock` is unchanged.
+7. Check `docs/docs` for any page that says the default template is bare, and update it if needed.
+8. Commit with a `Co-Authored-By:` line for the model, and open the PR with the repo's PR template, the before and after output, and an AI attestation.
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: plan-check, which graded plan.md and a draft plan comment (kept off the thread) against the issue thread, CONTRIBUTING.md, and my voice guide.
+- What it produced: a reject on the first run, then an accept with all six required checks passing after I revised the plan.
+- Difficulties: the first run failed thread-direction because a maintainer said the default should match the cookiecutter template, and my plan quietly did its own thing for the header. It also flagged "I confirmed this with a small script" as breaking my voice rule about saying confirmed without showing output, and overstated kjaymiller's reply as agreement.
+- What changed: I rebuilt the header and footer from the real cookiecutter template, added a NAVIGATION guard and a Risks note, quoted the actual repro output instead of saying "confirmed," and softened "agreed" to "acknowledged."
 
 ---
 
