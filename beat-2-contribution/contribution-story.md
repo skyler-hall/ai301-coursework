@@ -124,24 +124,18 @@ Claim comment: https://github.com/render-engine/render-engine/issues/609#issueco
 
 **Environment Setup**
 
-[What a stranger would need to stand this up: your operating system,
-the relevant versions (language, runtime, package manager, the project
-itself), and how you set the project up. Then the challenges you faced
-and how you solved them, or that none came up.]
+Windows 11 Home (10.0.26100), Python 3.13.7, uv 0.13.7, render-engine `main` at commit 2b906ef. I forked render-engine, cloned my fork, and set it up with `python -m uv sync --dev --group docs --frozen`. Challenges: uv and just weren't installed, so I installed uv with `python -m pip install --user uv`, and since it wasn't on my PATH I ran it as `python -m uv`. Without `--frozen`, uv rewrote uv.lock (228 lines), so I reverted that and always pass `--frozen` to keep the lockfile out of my PR. The full test suite passed (165 passed, 1 skipped) before I changed anything.
 
 **Steps to Reproduce**
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. On `main`, create `repro/repro_609.py`: it builds a `Site()` with no user templates folder, adds one `Page` with `template = "base.html"`, renders it, prints the HTML, and prints whether it contains a `<header>` or `<footer>` tag. This mirrors how `tests/test_templates/test_base_html.py` renders `base.html`.
+2. Run `python -m uv run --frozen python repro/repro_609.py`.
+3. Observed result: the page renders with an empty `<body>` and no `<header>` or `<footer>`.
 
 **Reproduction Evidence**
 
-- **Commit showing reproduction:** [link to commit in your fork]
-- **Screenshots/logs:** [if applicable]
-- **My findings:** [what you discovered during reproduction; an
-  honest, evidenced cannot-reproduce that led you to re-pick or ask
-  the maintainer belongs here and costs you nothing]
+- **Commit showing reproduction:** none. The repro script lives in `repro/`, which I excluded from git so it stays out of my PR.
+- **Screenshots/logs:**
 
 **Toolkit**
 
