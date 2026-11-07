@@ -62,6 +62,8 @@ I installed the issue scout, wrote my fit profile and three gh search queries (P
 
 I added an Upstream section to my voice guide with rules for claims, questions, and pings, then installed the voice-guard hook. The wiring test ran unblocked at first because Claude Code on Windows runs commands through a PowerShell tool, not Bash, so the hook's matcher never matched and check_voice.py skipped anything not named Bash. I widened the matcher to Bash|PowerShell and patched that check, and my guard log now shows two stops on the --help test and a pass on my real claim comment.
 
+My CLAUDE.local.md found that CONTRIBUTING lives in docs/docs/contributing/ and that uv sync rewrote uv.lock unless I passed --frozen, so I wrote both down to keep the lockfile out of my PR.
+
 **Unit 7: [one line on the tool work]**
 
 [2-4 sentences: the ship-gate and your gate manifest. What it produced
