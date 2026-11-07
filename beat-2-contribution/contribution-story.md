@@ -1,4 +1,4 @@
-# Contribution: [Issue Title]
+# Contribution: Add header and footer to default base template
 
 Path: `beat-2-contribution/contribution-story.md`
 
@@ -8,10 +8,9 @@ format criteria grade exactly that. Your course repo link is the whole submissio
 files and no evidence uploads are part of Assignment 5.
 
 **Contribution Number:** [1]
-**Student:** [Student name]
-**GitHub Username:** [your GitHub username, exactly as it appears on your profile - no @, no
-profile URL. Your comments upstream are identified by this name.]
-**Issue:** [GitHub issue link]
+**Student:** Skyler Hall
+**GitHub Username:** skyler-hall
+**Issue:** https://github.com/render-engine/render-engine/issues/609
 **Pull Request:** [GitHub PR link, once opened]
 
 One repository, built across units 5 to 8, telling the whole story of your real
@@ -55,16 +54,13 @@ happened; these entries are the toolkit's own timeline.
 All four entries are graded. Keep every heading below, and fill each
 one in the week it belongs to.
 
-**Unit 5: [one line on the tool work]**
+**Unit 5: Built my issue scout and fixed its rubric after a weak first scan**
 
-[2-4 sentences: what you built (the scout, your strategy), what broke
-or fell short, what changed because of it.]
+I installed the issue scout, wrote my fit profile and three gh search queries (Python and TypeScript good first issues, plus Python LLM help wanted), and ranked results by fewest comments. My first scan accepted all 5 issues, but two were the only issue in tiny repos where nobody had ever replied, and they still passed because "Maintainer responds" was only a preferred check. I made that check required and stricter, added the AI policy row the verdict rule named but the table was missing, and dropped issues opened in the last 14 days. When I graded my picks from the Issue Selection site, it rejected 5 of 6 as already claimed, which showed me how fast good first issues get taken.
 
-**Unit 6: [one line on the tool work]**
+**Unit 6: Installed the voice guard and fixed it so it actually fires on Windows**
 
-[2-4 sentences: the voice-guard, the repo-memory file. What broke or
-fell short, and what changed because of it. "Nothing broke" counts when
-it is true - say how you know.]
+I added an Upstream section to my voice guide with rules for claims, questions, and pings, then installed the voice-guard hook. The wiring test ran unblocked at first because Claude Code on Windows runs commands through a PowerShell tool, not Bash, so the hook's matcher never matched and check_voice.py skipped anything not named Bash. I widened the matcher to Bash|PowerShell and patched that check, and my guard log now shows two stops on the --help test and a pass on my real claim comment.
 
 **Unit 7: [one line on the tool work]**
 
@@ -80,24 +76,18 @@ drafted, what you did with the draft.]
 
 ## Why I Chose This Issue
 
-[1-2 paragraphs in your own words: how you searched, what your scan
-surfaced, what your scout's verdict said, why this issue fits your
-profile, and what you hope to learn. If your scout's verdict on it
-was reject and you chose it anyway, say so here and say why; choosing
-against your own tool silently is what loses points. Close with an
-honest read of the tool itself: where the scout fell short on a real
-wild search and what you changed or would change, or what convinced
-you it held up. **Record the link to your claim comment in this section too.**
-Not claimed yet? Write `claim pending` and today's date where the link goes,
-and add the link the moment your claim lands.]
+My scout's first wild scan ran three gh search queries from my fit profile (Python and TypeScript good first issues, plus Python LLM issues labeled help wanted) and ranked them by fewest comments. It accepted all five top results, but most were brand-new issues in repos with 0 or 1 stars, so I didn't use them. My real picks came from the AI301 Issue Selection site, and I graded six of them in two rounds: GRCEngClub/claude-grc-engineering#163, ArduPilot/ardupilot#14439, ICTU/quality-time#12823, rogerSuperBuilderAlpha/cursor-boston#553, pyvista/pyvista#1629, and render-engine/render-engine#609. Five were rejected because someone had already claimed them, usually with an open PR. render-engine#609 was the only accept. After the unit 6 scope patch I graded it again and it still passed, now with an "ambitious" difficulty note: the header and footer blocks in _base.html are empty, but the maintainers never decided what the defaults should contain. So my claim asks that question first.
+
+This issue fits my profile because it is Python plus Jinja HTML templates, close to my web work on Recyclepedia, and the result is something I can see in a browser. I want to learn how a real project's template system is organized and how to follow a repo's own rules, like waiting to be assigned and adding an AI attestation. Honestly, the scout's first scan was weak: ranking by fewest comments pulled in day-old issues from tiny repos, and its claim check only named PRs linked in the sidebar, even though most of the claims were PRs mentioned in the thread. Grading one issue at a time is where it earned its keep: it caught five claimed issues I couldn't see from the Issue Selection site, and it found render-engine's "wait to be assigned" rule before I posted.
+
+Claim comment: https://github.com/render-engine/render-engine/issues/609#issuecomment-6710634394
 
 **Toolkit**
 
-- Tool: issue-scout (your scout: your search strategy, your rubric),
-  and how you used it
-- What it produced: [the scan and its verdict on this issue, described]
-- Difficulties: [where it fell short, or "none met" if none did]
-- What changed: [what you patched or would update, or "nothing"]
+- Tool: issue-scout, with my search-strategy.md and rubric.md. I ran one scan, then graded my Issue Selection picks with "issue-scout: grade", and graded again after the unit 6 scope patch.
+- What it produced: an accept for render-engine#609 with every required check passing, an "ambitious" difficulty note naming the open question (what the default header and footer should show), and rejects for five other picks that were already claimed.
+- Difficulties: the first scan surfaced brand-new issues in tiny repos; "Maintainer responds" was only preferred, so silent repos got accepted; the verdict rule named an AI policy check the table didn't have; my old scope check would have rejected any issue with an open design edge; and the claim check rejects a whole checklist issue (like pyvista#1629) because of other people's PRs on other items.
+- What changed: I made "Maintainer responds" required and stricter, added the AI policy row, added a 14-day minimum issue age to my strategy, and swapped my scope check for the unit 6 scope-feasible row with a difficulty note. I would still change the claim check so open PRs only count when they cover the same item.
 
 ---
 
