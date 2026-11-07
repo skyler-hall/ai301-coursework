@@ -237,12 +237,9 @@ observable named is not a strategy.]
 
 ## Implementation Notes
 
-[A running log, added to as you work. Date each entry. What you
-built, decisions you made when you made them, wrong turns included.]
+**2026-11-07**
 
-**[Date]**
-
-[Entry]
+Claimed #609 and posted my claim through the voice guard. Reproduced the bug on main (no header or footer in the rendered page). Set up the ship-gate and manifest on Windows, which needed the same Bash to PowerShell fix as the voice guard. My first plan was rejected by plan-check for not following john0isaac's suggestion to match the cookiecutter template, so I rebuilt the header and footer from it and added a NAVIGATION guard. Waiting to be assigned before I start the branch.
 
 **[Date]**
 
