@@ -97,26 +97,29 @@ Claim comment: https://github.com/render-engine/render-engine/issues/609#issueco
 
 **Problem Description**
 
-[In your own words, what is broken or missing?]
+When a site doesn't have its own `_base.html`, render-engine falls back to its default `base.html`, which only extends `base_templates/_base.html`. That template has empty `header` and `footer` blocks, so every page built on the default templates has no header or footer at all.
 
 **Expected Behavior**
 
-[What should happen?]
+A page rendered with the default templates should include a simple header (like the site title) and a footer, so a new site looks complete before the user writes any custom templates.
 
 **Current Behavior**
 
-[What actually happens?]
+The rendered page has an empty `<body>` with no `<header>` or `<footer>` tags. My repro script prints `has <header>: False` and `has <footer>: False` on `main` at 2b906ef.
 
 **Affected Components**
 
-[Which parts of the codebase are involved?]
+- `render_engine_templates/base_templates/_base.html`: the full page layout, with the empty `{% block header %}` and `{% block footer %}`.
+- `render_engine_templates/base.html`: the fallback template, which just extends `_base.html`.
+- `render_engine_templates/base_templates/_page.html`: also extends `_base.html`, so it gets whatever defaults I add.
+- `tests/test_templates/test_base_html.py`: the tests that render `base.html`, where new header and footer tests will go.
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: my CLAUDE.local.md memory file, filled by one scoped Claude Code orientation run over only the templates folder.
+- What it produced: a short map of the files above, how they connect, where the tests live, and the setup and test commands that work on Windows.
+- Difficulties: I limited the first run to the base_templates/ folder, so it missed that base.html one folder up just extends _base.html, and my notes first said the fix belonged in base.html.
+- What changed: the repro showed the real gap is in _base.html, so I corrected the memory file before planning the fix.
 
 ---
 
@@ -135,14 +138,25 @@ Windows 11 Home (10.0.26100), Python 3.13.7, uv 0.13.7, render-engine `main` at 
 **Reproduction Evidence**
 
 - **Commit showing reproduction:** none. The repro script lives in `repro/`, which I excluded from git so it stays out of my PR.
-- **Screenshots/logs:**
+
+- **Screenshots/logs:** output of `repro_609.py` on main:
+
+  ~~~
+  <body >
+      </body>
+  </html>
+  has <header>: False
+  has <footer>: False
+  ~~~
+
+- **My findings:** `base.html` only contains `{% extends "base_templates/_base.html" %}`, so the problem is in `_base.html`: its `{% block header %}` and `{% block footer %}` are empty and there are no `<header>` or `<footer>` tags. I also noticed the page's content didn't render because the `content` block in `_base.html` is empty too. That is outside #609, so I'm not changing it, but I'll mention it to the maintainer.
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: repro-check, which graded my claim and repro report together. I used Claude Code to write the repro script and my CLAUDE.local.md memory file to remember the setup commands.
+- What it produced: an accept, with every required check passing (environment recorded and faithful, steps rerunnable, behavior matches, claims backed, AI disclosure).
+- Difficulties: the preferred control-run check failed because I only showed the broken case, not a run with a user `_base.html` that does render a header and footer. It also flagged that my repro report had no AI attestation line of its own, even though the repo asks for one on every comment.
+- What changed: I updated CLAUDE.local.md when the repro showed the fix belongs in `_base.html`, not `base.html`. Next time I'd add a control run for a clear before and after.
 
 ---
 
