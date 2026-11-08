@@ -210,6 +210,8 @@ I'm deliberately NOT changing: the empty `content` and `page_title` blocks, any 
 7. Check `docs/docs` for any page that says the default template is bare, and update it if needed.
 8. Commit with a `Co-Authored-By:` line for the model, and open the PR with the repo's PR template, the before and after output, and an AI attestation.
 
+Deviation on 2026-11-08: the override test needed a `theme_site.load_themes()` call to find its template, and the navigation test now removes `NAVIGATION` when it finishes, because Jinja globals are shared between sites and it would leak into other tests. I also created the branch and built the fix locally before being assigned, since the maintainer hadn't replied yet, but I won't push it or open the PR until I'm assigned.
+
 **Toolkit**
 
 - Tool: plan-check, which graded plan.md and a draft plan comment (kept off the thread) against the issue thread, CONTRIBUTING.md, and my voice guide.
@@ -221,17 +223,14 @@ I'm deliberately NOT changing: the empty `content` and `page_title` blocks, any 
 
 ## Testing Strategy
 
-[What observable checks prove the fix: your reproduction steps re-run
-against the built change (before and after), and the repo's own test
-suite or checks with the outcome shown. "Tests pass" with nothing
-observable named is not a strategy.]
+I wrote the tests before the fix. On branch `issue-609` I added four tests to `tests/test_templates/test_base_html.py` and ran `python -m uv run --frozen --dev pytest --no-cov tests/test_templates`. Before the fix: 3 failed and 4 passed (the default header, navigation, and footer tests failed, and the override test passed). After editing `_base.html`: all 7 passed. My repro script went from `has <header>: False` / `has <footer>: False` on main to `True` / `True` on the branch. Then I ran every check in my ship manifest: setup, the full pytest suite (169 passed, 1 skipped, which is the 165 baseline plus my 4 new tests), ruff check, ruff format check, and ty check all passed, and uv.lock's hash matched main.
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: Claude Code following my plan.md, plus the checks in my ship manifest.
+- What it produced: two commits on issue-609 (tests, then the fix) and a test_evidence.md with before and after repro output, failing then passing test output, and every manifest result.
+- Difficulties: the override test failed at first with TemplateNotFound because it skipped load_themes(); the project's pytest settings use -q, which hid the per-test names; and NAVIGATION leaked between tests because Jinja globals are shared.
+- What changed: added load_themes() to the test, cleaned up NAVIGATION after the navigation test, and used -rA to list each test by name in the evidence.
 
 ---
 
@@ -241,16 +240,16 @@ observable named is not a strategy.]
 
 Claimed #609 and posted my claim through the voice guard. Reproduced the bug on main (no header or footer in the rendered page). Set up the ship-gate and manifest on Windows, which needed the same Bash to PowerShell fix as the voice guard. My first plan was rejected by plan-check for not following john0isaac's suggestion to match the cookiecutter template, so I rebuilt the header and footer from it and added a NAVIGATION guard. Waiting to be assigned before I start the branch.
 
-**[Date]**
+**2026-11-08**
 
-[Entry]
+Still not assigned, so I built the fix locally on branch issue-609 without pushing. Wrote the 4 tests first and confirmed 3 failed before the fix, then filled the header and footer blocks in _base.html as planned. All 7 template tests and every manifest check passed. Next: run the ship-gate, write the PR draft, and open the PR once I'm assigned.
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: Claude Code, working from plan.md and my CLAUDE.local.md.
+- What it produced: the tests commit (64d0f2d), the fix commit (335f0a8), and test_evidence.md.
+- Difficulties: two test details the plan didn't predict (the missing load_themes() call and the shared Jinja globals).
+- What changed: I recorded both as a deviation under my Implementation Plan instead of changing the plan silently.
 
 ---
 
