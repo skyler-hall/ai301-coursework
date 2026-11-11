@@ -11,7 +11,7 @@ files and no evidence uploads are part of Assignment 5.
 **Student:** Skyler Hall
 **GitHub Username:** skyler-hall
 **Issue:** https://github.com/render-engine/render-engine/issues/609
-**Pull Request:** [GitHub PR link, once opened]
+**Pull Request:** none. #609 was closed as not planned on 2026-11-09 before I was assigned, so I didn't open one.
 
 One repository, built across units 5 to 8, telling the whole story of your real
 contribution. Fill it as you work, not at the end — the sections below ask for evidence that
@@ -64,15 +64,13 @@ I added an Upstream section to my voice guide with rules for claims, questions, 
 
 My CLAUDE.local.md found that CONTRIBUTING lives in docs/docs/contributing/ and that uv sync rewrote uv.lock unless I passed --frozen, so I wrote both down to keep the lockfile out of my PR.
 
-**Unit 7: [one line on the tool work]**
+**Unit 7: Got the ship-gate working on Windows and built a tested fix my plan-check accepted**
 
-[2-4 sentences: the ship-gate and your gate manifest. What it produced
-on your real branch, what fought you, what changed because of it.]
+I installed the ship-gate and wrote a manifest with five checks from the repo's CI files (uv sync, pytest, ruff check, ruff format check, ty), and moved nox, markdown lint, and pre-commit to the excluded table with dated reasons, since nox needs a Windows compiler I don't have and rewrites uv.lock. The hook had the same Windows problem as the voice guard, so I changed python3 to python, widened its matcher to Bash|PowerShell, and patched check_gate.py's Bash-only check, and after that the `gh pr create --help` test was stopped by both hooks. My branch passed every manifest check, but I never ran the ship-gate on a real PR because the issue was closed before I was assigned.
 
-**Unit 8: [one line on the tool work]**
+**Unit 8: Installed the PR monitor, which correctly found no PR to watch**
 
-[2-4 sentences: the PR-monitor and your playbook. What it read, what it
-drafted, what you did with the draft.]
+I installed the PR monitor and ran `monitor.py --state` on my issue-609 branch. It reported NO PR YET, which was correct: #609 was closed as not planned before I was assigned, so I never opened a PR. With no PR it had nothing to read or draft and made no Claude call. What fell short was on my side, not the tool's: the monitor only watches PRs, so it couldn't help with the real problem, a quiet issue thread, and next time I'd check how recently maintainers commented on the issue itself before committing to it.
 
 ---
 
@@ -244,6 +242,10 @@ Claimed #609 and posted my claim through the voice guard. Reproduced the bug on 
 
 Still not assigned, so I built the fix locally on branch issue-609 without pushing. Wrote the 4 tests first and confirmed 3 failed before the fix, then filled the header and footer blocks in _base.html as planned. All 7 template tests and every manifest check passed. Next: run the ship-gate, write the PR draft, and open the PR once I'm assigned.
 
+**2026-11-10**
+
+brass75 closed #609 as not planned on 2026-11-09 with no comment, before anyone assigned me, so I never pushed my branch or opened a PR. I installed the PR monitor anyway and confirmed it reported NO PR YET, then finished my story with what happened.
+
 **Toolkit**
 
 - Tool: Claude Code, working from plan.md and my CLAUDE.local.md.
@@ -255,27 +257,23 @@ Still not assigned, so I built the fix locally on branch issue-609 without pushi
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when opened]
+**PR Link:** none. No PR was opened.
 
-**PR Description:** [what the PR says; much of the content above
-adapts into it]
+**PR Description:** I didn't open a PR. The fix is on my local branch `issue-609` (commits 64d0f2d and 335f0a8). It fills the header and footer blocks in `_base.html` to match the cookiecutter template and adds four tests. I held off because the repo's CONTRIBUTING.md says PRs on unassigned issues are closed without review, and brass75 closed #609 as not planned on 2026-11-09 before anyone assigned me.
 
 **Maintainer Feedback:**
 
-- [Date]: [feedback received, or "none yet"; silence is a normal
-  state and costs you nothing]
-- [Date]: [how you addressed it]
+- 2026-11-07: I posted my claim and asked what the defaults should show. No reply.
+- 2026-11-09: brass75 closed #609 as not planned, with no comment.
 
-**Status:** [Awaiting review / Iterating / Merged / Closed. The
-status is a fact you record, never a grade: the PR is graded as
-opened.]
+**Status:** Closed. The issue was closed as not planned, and no PR was opened.
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: ship-gate, with my ship-manifest.md.
+- What it produced: on the hook test it printed "ship-gate: STOP. no PR text to check," which showed it fires before `gh pr create`. All five manifest checks passed on main and on my branch.
+- Difficulties: on Windows the hook called python3, which doesn't exist on my PC, and it only watched the Bash tool while Claude Code used PowerShell. It never ran on a real PR because the issue closed first.
+- What changed: I switched the command to python, widened the matcher to Bash|PowerShell, and patched check_gate.py to accept PowerShell, the same fix as my voice guard.
 
 ---
 
@@ -283,25 +281,21 @@ opened.]
 
 **Technical Skills Gained**
 
-[What you learned technically, named concretely.]
+Jinja template inheritance (extends, blocks, and how overriding a block replaces its default), writing tests before a fix and confirming they fail first, running a Python project with uv and keeping uv.lock unchanged with --frozen, Claude Code PreToolUse hooks and matchers, and the fork and upstream git workflow, including keeping local files out of a PR with .git/info/exclude.
 
 **Challenges Overcome**
 
-[What was hard and how you solved it; point at the real events, the
-Toolkit blocks above are full of them.]
+The course tools were written for Mac, so on Windows both hooks silently didn't fire until I traced it to the PowerShell tool and patched them. Five of my six issue picks were already claimed, which my scout caught. My first plan was rejected for not following a maintainer's direction, so I rebuilt it from the cookiecutter template. Then the issue was closed as not planned after I had a tested fix ready.
 
 **What I'd Do Differently Next Time**
 
-[Reflection on your process.]
+My scout checked whether the repo was active, but not whether this specific issue was still wanted. #609 was from 2024 and its thread had been quiet since then. Next time I'd add a rubric check for recent maintainer activity on the issue itself, and ask the maintainer to confirm the issue is still wanted before building. I'd also start earlier in the week so a slow reply doesn't run into the deadline.
 
 ---
 
 ## Resources Used
 
-[What actually helped, not a reading list. List things this story
-already shows you using: the doc you followed to set the environment
-up, the thread that explained the bug, the person who answered you.
-One real entry beats ten plausible ones.]
-
-- [Link to documentation that helped]
-- [Discussion, issue, or post that helped]
+- render-engine's CONTRIBUTING.md (docs/docs/contributing/CONTRIBUTING.md), for the assignment rule, AI attestation, and setup steps
+- The #609 issue thread, where john0isaac suggested matching the cookiecutter template: https://github.com/render-engine/render-engine/issues/609
+- The cookiecutter site template my header and footer came from: https://github.com/render-engine/cookiecutter-render-engine-site
+- tests/test_templates/test_base_html.py in the repo, which showed me how to render base.html in a test
